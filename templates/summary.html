@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br> <h2>Summary:</h2><br>
+<form method="post">
+
+    <div class="form-group">
+        <label for="content">
+
+        <h4>Please check what should be done next:</h4><br>
+	<p>Add a dhcp reservation for the mac-address {{ mac_address }} and the host {{ hostname }} <br>
+	This dhcp reservation will be created on the dhcp server responsibel for vlan 252 at the location {{ location }}</p>
+
+        <br><p>Please click on submit to proceed ... </p>
+
+	</label>
+
+    <br><br>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+    <br><br>
+    </div>
+</form>
+{% endblock %}
+

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Show the old entrys</h1>
+    <br><br>
+    <hr><br>
+
+    {% for device in devices %}
+
+        <p>{{ device['original_line'] }}</p>
+        <span class="badge badge-primary">{{ device['created'] }}</span>
+        <hr>
+
+    {% endfor %}
+{% endblock %}

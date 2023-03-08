@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br> <h2>Create a new dhcp reservation</h2><br>
+<form method="post">
+
+    <div class="form-group">
+        <label for="content">Please add a line with mac-address, hostname and an optional comment, use a semicolon as separator</label>
+    <br><br>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+    <br><br>
+    </div>
+        <input name="content" type="text" placeholder=""
+                  class="form-control">{{ request.form['content'] }}</>
+    </div>
+</form>
+{% endblock %}
+
