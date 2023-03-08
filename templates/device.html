@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h2>{% block title %} {{ device['original_line'] }} {% endblock %}</h2>
-    <span class="badge badge-primary">{{ device['created'] }}</span>
-    <p>{{ device['content'] }}</p>
-{% endblock %}
-

@@ -1,5 +1,5 @@
 
-import sqlite3
+import sqlite3, subprocess
 from flask import Flask, render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
 
@@ -33,13 +33,13 @@ def show_summary():
 
   mac_address, hostname, location, original_line = string.split('|')
 
-  flash('Calling sub show_summary() ... ')
+  #flash('Calling sub show_summary() ... ')
   
   if request.method == 'POST':
  
     if check_mac_address(mac_address):
         print(f'Ignoring the mac-address {mac_address} ... ')
-        flash('Found this mac-address in the internal database, the dhcp reservation has already been created ... ')
+        flash(f'A dhcp reservation has already been created, please check the mac-address {mac_address} !')
         return render_template('create.html') 
 
     else:
@@ -74,16 +74,16 @@ def show_result():
     flash('Calling sub show_result() ... ')
 
     ### jetzt passiert endlich mal was
-    try:
+    # try:
 
-        ### powershell Script aufrufen
-        command = "/root/zero_touch/call_dhcp_reservation_program.py 'dir C:\\Users\' "
-        print(command)
-        result = run_command(command)       
-        print(result)
+    ### powershell Script aufrufen
+    command = "./call_dhcp_reservation_program.py 'dir C:\\Users\' "
+    print(command)
+    result = run_command(command)       
+    print(result)
 
-    except:
-        result = 'big problem :-('
+    # except:
+    #    result = 'big problem :-('
 
     flash(result)
     return render_template('archiv.html')

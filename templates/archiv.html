@@ -8,8 +8,8 @@
 
     {% for device in devices %}
 
-        <p>{{ device['original_line'] }}</p>
-        <span class="badge badge-primary">{{ device['created'] }}</span>
+        <span class="badge badge-secondary">{{ device['created'] }}</span>
+        <h4>{{ device['original_line'] }}</h4>
         <hr>
 
     {% endfor %}
