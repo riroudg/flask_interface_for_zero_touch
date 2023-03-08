@@ -7,19 +7,17 @@
     <div class="form-group">
         <label for="content">
 
-        <h4>Please check the result from windows server gdepfn2s</h4><br>
-	<p>AAA <br>
-	BBB</p>
+        <br>
+	<h4> Executing the command: </h4><br>
+        <pre> {{ command }} </pre>
 
-        <br><p>Please click on submit to show the archiv... </p>
 
-	</label>
+        <br>
+        <h4> Result from windows script server gdepfn2s: </h4><br>
+	<pre>
+		{{ result }}
+	</pre>
 
-    <br><br>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit</button>
-
-    <br><br>
     </div>
 </form>
 {% endblock %}

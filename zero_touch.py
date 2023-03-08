@@ -3,6 +3,7 @@ import sqlite3, subprocess
 from flask import Flask, render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
 
+
 zero_touch = Flask(__name__)
 zero_touch.config['SECRET_KEY'] = 'your geberit secret key'
 
@@ -38,9 +39,10 @@ def show_summary():
   if request.method == 'POST':
  
     if check_mac_address(mac_address):
+
         print(f'Ignoring the mac-address {mac_address} ... ')
         flash(f'A dhcp reservation has already been created, please check the mac-address {mac_address} !')
-        return render_template('create.html') 
+        return redirect(url_for('create'))
 
     else:
 
@@ -68,25 +70,29 @@ def archiv():
     return render_template('archiv.html', devices=devices)
 
 
-@zero_touch.route('/result')
+@zero_touch.route('/result', methods=('GET', 'POST'))
 def show_result():
 
-    flash('Calling sub show_result() ... ')
+
+    result = ''
+
+    with open(tmp_file, 'r') as fh:
+        string = fh.read()
+    mac_address, hostname, location, original_line = string.split('|')
 
     ### jetzt passiert endlich mal was
-    # try:
+    try:
 
-    ### powershell Script aufrufen
-    command = "./call_dhcp_reservation_program.py 'dir C:\\Users\' "
-    print(command)
-    result = run_command(command)       
-    print(result)
+        ### powershell Script aufrufen
+        command = "./call_dhcp_reservation_program.py 'cd C:\\Users\scma_site\zero_touch && .\create_dhcp_reservation.py --debug --skip-clearpass" \
+		+ " --location " + location + " --host " + hostname + " --mac-address " + mac_address + " 2>.\out.txt && type .\out.txt' "
+        print(command)
+        result = run_command(command)       
 
-    # except:
-    #    result = 'big problem :-('
+    except:
+        flash('big problem :-(')
 
-    flash(result)
-    return render_template('archiv.html')
+    return render_template('result.html', command=command, result=result)
 
 
 
@@ -115,12 +121,6 @@ def check_mac_address(mac_address):
    conn.close()
 
    return result
-
-@zero_touch.route('/<int:device_id>')
-def show_device_details(device_id):
-    device = get_device(device_id)
-    return render_template('add_dhcp_reservation.html', device=device)
-
 
 
 @zero_touch.route('/create', methods=('GET', 'POST'))
