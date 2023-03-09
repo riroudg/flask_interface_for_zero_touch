@@ -41,7 +41,13 @@ def show_summary():
     if check_mac_address(mac_address):
 
         print(f'Ignoring the mac-address {mac_address} ... ')
-        flash(f'A dhcp reservation has already been created, please check the mac-address {mac_address} !')
+        flash(f'A dhcp reservation for this mac-address has already been created, please check the mac-address {mac_address} !')
+        return redirect(url_for('create'))
+
+    elif check_hostname(hostname):
+
+        print(f'Ignoring the hostname {hostname} ... ')
+        flash(f'A dhcp reservation for this hostname has already been created, please check the hostname {hostname} !')
         return redirect(url_for('create'))
 
     else:
@@ -67,6 +73,8 @@ def archiv():
     devices = conn.execute('SELECT * FROM devices').fetchall()
     conn.close()
 
+    devices.reverse()
+    print(type(devices))
     return render_template('archiv.html', devices=devices)
 
 
@@ -84,7 +92,7 @@ def show_result():
     try:
 
         ### powershell Script aufrufen
-        command = "./call_dhcp_reservation_program.py 'cd C:\\Users\scma_site\zero_touch && .\create_dhcp_reservation.py --debug --skip-clearpass" \
+        command = "./call_dhcp_reservation_program.py 'cd C:\\Users\scma_site\zero_touch && .\create_dhcp_reservation.py --debug --fake --skip-clearpass" \
 		+ " --location " + location + " --host " + hostname + " --mac-address " + mac_address + " 2>.\out.txt && type .\out.txt' "
         print(command)
         result = run_command(command)       
@@ -118,6 +126,16 @@ def check_mac_address(mac_address):
    conn = get_db_connection()
    result = conn.execute('SELECT * FROM devices WHERE mac_address = ?',
 		(mac_address,)).fetchone()
+   conn.close()
+
+   return result
+
+def check_hostname(hostname):
+
+   ### hostname should not exist in sql database
+   conn = get_db_connection()
+   result = conn.execute('SELECT * FROM devices WHERE hostname = ?',
+		(hostname,)).fetchone()
    conn.close()
 
    return result
