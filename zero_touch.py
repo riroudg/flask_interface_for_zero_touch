@@ -97,7 +97,8 @@ def show_result():
             + ">C:\\temp\out.txt 2>&1 && type C:\\temp\out.txt"
 
         command = "C:\\Tools\python\python.exe " + python_script; print(command)
-        result = run_command(command)       
+
+        result = run_command(command)
 
     except:
         flash('big problem :-(')
