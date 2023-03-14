@@ -91,11 +91,14 @@ def show_result():
     ### jetzt passiert endlich mal was
     try:
 
-        ### powershell Script aufrufen
-        command = "./call_dhcp_reservation_program.py 'cd C:\\Users\scma_site\zero_touch && .\create_dhcp_reservation.py --debug --fake --skip-clearpass" \
-		+ " --location " + location + " --host " + hostname + " --mac-address " + mac_address + " 2>.\out.txt && type .\out.txt' "
-        print(command)
-        result = run_command(command)       
+        ### python Script aufrufen
+        python_script = "C:\\Users\scma_site\zero_touch\create_dhcp_reservation-new.py --skip-clearpass" \
+            + " --location " + location + " --host " + hostname + " --mac-address " + mac_address \
+            + ">C:\\temp\out.txt 2>&1 && type C:\\temp\out.txt"
+
+        command = "C:\\Tools\python\python.exe " + python_script; print(command)
+        result = run_command(command)
+
 
     except:
         flash('big problem :-(')
