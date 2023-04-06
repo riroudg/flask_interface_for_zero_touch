@@ -1,0 +1,1 @@
+C:\Tools\python\python.exe C:\Users\scma_site\flask_interface_for_zero_touch\zero_touch.py
