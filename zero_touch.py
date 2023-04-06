@@ -4,8 +4,8 @@ from flask import Flask, render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
 
 
-zero_touch = Flask(__name__)
-zero_touch.config['SECRET_KEY'] = 'your geberit secret key'
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '88_ormwjyxrilcmmvawjxfayrtiv'
 
 ### save the values for mac_address, hostname and location in a temporary file
 tmp_file = './.tt'
@@ -15,17 +15,17 @@ def run_command(command):
     return output
 
 
-@zero_touch.route('/')
+@app.route('/')
 def index():
     return render_template('index.html')
 
 
-@zero_touch.route('/about')
+@app.route('/about')
 def about():
     return render_template('about.html')
 
 
-@zero_touch.route('/summary', methods=('GET', 'POST'))
+@app.route('/summary', methods=('GET', 'POST'))
 def show_summary():
 
   ### Werte werden via tmp_file uebergeben
@@ -67,7 +67,7 @@ def show_summary():
 
 
 
-@zero_touch.route('/archiv')
+@app.route('/archiv')
 def archiv():
     conn = get_db_connection()
     devices = conn.execute('SELECT * FROM devices').fetchall()
@@ -78,7 +78,7 @@ def archiv():
     return render_template('archiv.html', devices=devices)
 
 
-@zero_touch.route('/result', methods=('GET', 'POST'))
+@app.route('/result', methods=('GET', 'POST'))
 def show_result():
 
 
@@ -92,7 +92,7 @@ def show_result():
     try:
 
         ### python Script aufrufen
-        python_script = "C:\\Users\scma_site\zero_touch\create_dhcp_reservation-new.py --skip-clearpass" \
+        python_script = "C:\\Users\scma_site\zero_touch\create_dhcp_reservation-new.py --debug" \
             + " --location " + location + " --host " + hostname + " --mac-address " + mac_address \
             + ">C:\\temp\out.txt 2>&1 && type C:\\temp\out.txt"
 
@@ -144,7 +144,7 @@ def check_hostname(hostname):
    return result
 
 
-@zero_touch.route('/create', methods=('GET', 'POST'))
+@app.route('/create', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
 
@@ -185,4 +185,5 @@ def create():
 
     return render_template('create.html')
 
-
+if __name__ == '__main__':
+        app.run(host='0.0.0.0', port=9044, debug=True)
