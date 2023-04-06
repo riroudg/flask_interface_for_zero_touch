@@ -1,7 +1,7 @@
 #
 # Datei: README.md
 #
-# Dieses Verzeichnis wurde am 2023-03-08 in das github Repository 
+# Dieses Verzeichnis wurde am 2023-03-08 in das github Repository kopiert
 #
 #	https://github.com/riroudg/flask_interface_for_zero_touch
 #
