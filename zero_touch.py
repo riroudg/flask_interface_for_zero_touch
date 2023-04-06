@@ -92,7 +92,7 @@ def show_result():
     try:
 
         ### python Script aufrufen
-        python_script = "C:\\Users\scma_site\zero_touch\create_dhcp_reservation-new.py --debug" \
+        python_script = "C:\\Users\scma_site\\aruba_zero_touch\create_dhcp_reservation.py --debug" \
             + " --location " + location + " --host " + hostname + " --mac-address " + mac_address \
             + ">C:\\temp\out.txt 2>&1 && type C:\\temp\out.txt"
 
