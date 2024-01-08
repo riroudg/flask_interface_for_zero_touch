@@ -37,7 +37,7 @@ def main(argv=None):
         command = 'C:\\Users\scma_site\zero_touch\create_dhcp_reservation.py --help'
 
 
-    user, password, server = 'gebcorp\scma_site', 'gskroleX4$abc', 'gdepfn2s.geberit.net' 
+    user, password, server = 'gebcorp\scma_site', 'PASSWORD', 'gdepfn2s.geberit.net' 
 
     client = Client(server, username=user, password=password, cert_validation=False)
     stdout, stderr, rc = client.execute_cmd(command)

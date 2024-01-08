@@ -33,8 +33,6 @@ def show_summary():
       string = fh.read()
 
   mac_address, hostname, location, original_line = string.split('|')
-
-  #flash('Calling sub show_summary() ... ')
   
   if request.method == 'POST':
  
@@ -51,18 +49,9 @@ def show_summary():
         return redirect(url_for('create'))
 
     else:
-
-        ### Save this mac_address to local sql database
-        conn = get_db_connection()
-        conn.execute('INSERT INTO devices (mac_address, hostname, original_line) VALUES (?, ?, ?)',
-                 (mac_address, hostname, original_line))
-
-        conn.commit(); conn.close()
-
         return redirect(url_for('show_result'))
 
   else:
-
     return render_template('summary.html', mac_address=mac_address, hostname=hostname, location=location)
 
 
@@ -74,13 +63,11 @@ def archiv():
     conn.close()
 
     devices.reverse()
-    print(type(devices))
     return render_template('archiv.html', devices=devices)
 
 
 @app.route('/result', methods=('GET', 'POST'))
 def show_result():
-
 
     result = ''
 
@@ -91,24 +78,30 @@ def show_result():
     ### jetzt passiert endlich mal was
     try:
 
-        ### python Script aufrufen
-        python_script = "C:\\Users\scma_site\\aruba_zero_touch\create_dhcp_reservation.py --debug" \
+        ### python Script aufrufen ( darf keinen exit Code ungleich Null haben ! )
+        python_script = "C:\\Users\\scma_site\\aruba_zero_touch\\create_dhcp_reservation-new.py --debug" \
             + " --location " + location + " --host " + hostname + " --mac-address " + mac_address \
-            + ">C:\\temp\out.txt 2>&1 && type C:\\temp\out.txt"
+            + " >C:\\temp\\out_all.txt 2>&1 && type C:\\temp\\out_all.txt"
 
         command = "C:\\Tools\python\python.exe " + python_script; print(command)
 
         result = run_command(command)
 
+        ### Save this mac_address to local sql database
+        conn = get_db_connection()
+        conn.execute('INSERT INTO devices (mac_address, hostname, original_line) VALUES (?, ?, ?)', (mac_address, hostname, original_line))
+        conn.commit(); conn.close()
+
     except:
         flash('big problem :-(')
+
 
     return render_template('result.html', command=command, result=result)
 
 
 
 def get_db_connection():
-    conn = sqlite3.connect('device.db')
+    conn = sqlite3.connect('C:\\Users\\scma_site\\aruba_zero_touch\\device.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -118,7 +111,9 @@ def get_device(device_id):
     device = conn.execute('SELECT * FROM devices WHERE id = ?',
                         (device_id,)).fetchone()
     conn.close()
-    if device is None: abort(404)
+
+    if device is None: 
+        abort(404)
 
     return device
 
@@ -127,18 +122,17 @@ def check_mac_address(mac_address):
 
    ### mac_address should not exist in sql database
    conn = get_db_connection()
-   result = conn.execute('SELECT * FROM devices WHERE mac_address = ?',
-		(mac_address,)).fetchone()
+   result = conn.execute('SELECT * FROM devices WHERE mac_address = ?', (mac_address,)).fetchone()
    conn.close()
 
    return result
 
+
 def check_hostname(hostname):
 
-   ### hostname should not exist in sql database
+   ### the hostname should not exist in sql database in table 'devices'
    conn = get_db_connection()
-   result = conn.execute('SELECT * FROM devices WHERE hostname = ?',
-		(hostname,)).fetchone()
+   result = conn.execute('SELECT * FROM devices WHERE hostname = ?', (hostname,)).fetchone()
    conn.close()
 
    return result
@@ -184,6 +178,7 @@ def create():
             return redirect(url_for('show_summary'))
 
     return render_template('create.html')
+
 
 if __name__ == '__main__':
         app.run(host='0.0.0.0', port=9044, debug=True)
