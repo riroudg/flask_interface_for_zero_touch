@@ -83,14 +83,20 @@ def show_result():
             + " --location " + location + " --host " + hostname + " --mac-address " + mac_address \
             + " >C:\\temp\\out_all.txt 2>&1 && type C:\\temp\\out_all.txt"
 
-        command = "C:\\Tools\python\python.exe " + python_script; print(command)
+        command = "C:\\Tools\\python\\python.exe " + python_script; print(command)
 
         result = run_command(command)
+        print(type(result)); print(f'result = {result}')
 
-        ### Save this mac_address to local sql database
-        conn = get_db_connection()
-        conn.execute('INSERT INTO devices (mac_address, hostname, original_line) VALUES (?, ?, ?)', (mac_address, hostname, original_line))
-        conn.commit(); conn.close()
+        ### Gab es Probleme ?
+        if 'STOP' in result:
+            flash('small problem, found a STOP in the output, please check what is wrong ...')
+
+        else:
+            ### Save this mac_address to local sql database
+            conn = get_db_connection()
+            conn.execute('INSERT INTO devices (mac_address, hostname, original_line) VALUES (?, ?, ?)', (mac_address, hostname, original_line))
+            conn.commit(); conn.close()
 
     except:
         flash('big problem :-(')
